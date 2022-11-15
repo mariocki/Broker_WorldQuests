@@ -43,6 +43,9 @@ local DEBUG = false
 local isHorde = UnitFactionGroup("player") == "Horde"
 
 local MAP_ZONES = {
+    [CONSTANTS.EXPANSIONS.DRAGONFLIGHT] = {
+        -- TODO DRAGONFLIGHT
+    },
 	[CONSTANTS.EXPANSIONS.SHADOWLANDS] = {
 		[1525] = { id = 1525, name = GetMapInfo(1525).name, quests = {}, buttons = {}, }, --Revendreth 9.0
 		[1533] = { id = 1533, name = GetMapInfo(1533).name, quests = {}, buttons = {}, }, -- Bastion 9.0
@@ -82,7 +85,10 @@ local MAP_ZONES = {
 	},
 }
 local MAP_ZONES_SORT = {
-	[CONSTANTS.EXPANSIONS.SHADOWLANDS] = {
+	[CONSTANTS.EXPANSIONS.DRAGONFLIGHT] = {
+        -- TODO DRAGONFLIGHT
+    },
+    [CONSTANTS.EXPANSIONS.SHADOWLANDS] = {
 		1525, 1533, 1536, 1565, 1543, 1961, 1970
 	},
 	[CONSTANTS.EXPANSIONS.BFA] = {
@@ -97,7 +103,7 @@ local defaultConfig = {
     attachToWorldMap = false,
     showOnClick = false,
     usePerCharacterSettings = false,
-    expansion = CONSTANTS.EXPANSIONS.SHADOWLANDS, 
+    expansion = CONSTANTS.EXPANSIONS.SHADOWLANDS, -- TODO DRAGONFLIGHT
     enableClickToOpenMap = false,
     enableTomTomWaypointsOnClick = true,
     alwaysShowBountyQuests = true,
@@ -194,6 +200,9 @@ local defaultConfig = {
     alwaysShowAvowed = false,
     alwaysShowWildHunt = false,
 
+    -- Dragonflight
+    -- TODO DRAGONFLIGHT
+
     showPetBattle = true,
     hidePetBattleBountyQuests = false,
     alwaysShowPetBattleFamilyFamiliar = true,
@@ -230,6 +239,28 @@ BWQ:SetBackdropColor(0, 0, 0, .9)
 BWQ:SetBackdropBorderColor(0, 0, 0, 1)
 BWQ:SetClampedToScreen(true)
 BWQ:Hide()
+
+BWQ.buttonDragonflight = CreateFrame("Button", nil, BWQ, "BackdropTemplate")
+BWQ.buttonDragonflight:SetSize(20, 15)
+BWQ.buttonDragonflight:SetPoint("TOPRIGHT", BWQ, "TOPRIGHT", -92, -8)
+BWQ.buttonDragonflight:SetBackdrop({
+    bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+    tile = false,
+    tileSize = 0,
+    edgeSize = 2,
+    insets = {
+        left = 0,
+        right = 0,
+        top = 0,
+        bottom = 0
+    }
+})
+BWQ.buttonDragonflight:SetBackdropColor(0.1, 0.1, 0.1)
+BWQ.buttonDragonflight.texture = BWQ.buttonDragonflight:CreateTexture(nil, "OVERLAY")
+BWQ.buttonDragonflight.texture:SetPoint("TOPLEFT", 1, -1)
+BWQ.buttonDragonflight.texture:SetPoint("BOTTOMRIGHT", -1, 1)
+BWQ.buttonDragonflight.texture:SetTexture("Interface\\Calendar\\Holidays\\Calendar_WeekendShadowlandsStart") -- TODO DRAGONFLIGHT
+BWQ.buttonDragonflight.texture:SetTexCoord(0.15, 0.55, 0.23, 0.47)
 
 BWQ.buttonShadowlands = CreateFrame("Button", nil, BWQ, "BackdropTemplate")
 BWQ.buttonShadowlands:SetSize(20, 15)
@@ -297,6 +328,9 @@ BWQ.buttonLegion.texture:SetPoint("BOTTOMRIGHT", -1, 1)
 BWQ.buttonLegion.texture:SetTexture("Interface\\Calendar\\Holidays\\Calendar_WeekendLegionStart")
 BWQ.buttonLegion.texture:SetTexCoord(0.15, 0.55, 0.23, 0.47)
 
+BWQ.buttonDragonflight:SetScript("OnClick", function(self)
+    BWQ:SwitchExpansion(CONSTANTS.EXPANSIONS.DRAGONFLIGHT)
+end)
 BWQ.buttonShadowlands:SetScript("OnClick", function(self)
     BWQ:SwitchExpansion(CONSTANTS.EXPANSIONS.SHADOWLANDS)
 end)
@@ -370,7 +404,8 @@ local hasUnlockedWorldQuests
 function BWQ:WorldQuestsUnlocked()
     if not hasUnlockedWorldQuests then
         hasUnlockedWorldQuests = 
-				(expansion == CONSTANTS.EXPANSIONS.SHADOWLANDS and UnitLevel("player") >= 51 and IsQuestFlaggedCompleted(57559)) 
+                (expansion == CONSTANTS.EXPANSIONS.DRAGONFLIGHT and UnitLevel("player") >= 70 and IsQuestFlaggedCompleted(57559)) -- TODO DRAGONFLIGHT
+				or (expansion == CONSTANTS.EXPANSIONS.SHADOWLANDS and UnitLevel("player") >= 51 and IsQuestFlaggedCompleted(57559))
 				or (expansion == CONSTANTS.EXPANSIONS.BFA and UnitLevel("player") >= 50 and
 						(IsQuestFlaggedCompleted(51916) or IsQuestFlaggedCompleted(52451) -- horde
 					or IsQuestFlaggedCompleted(51918) or IsQuestFlaggedCompleted(52450))) -- alliance
@@ -383,9 +418,12 @@ function BWQ:WorldQuestsUnlocked()
         end
 
         local level, quest
-        if expansion == CONSTANTS.EXPANSIONS.SHADOWLANDS then
-            level = "51" -- TODO: can we somehow find out if we have a character that reached 60?
-            quest = "|cffffff00|Hquest:57559:-1|h[UNKNOWN TITLE]|h|r" -- TODO: find the corresponding Covenant lines
+        if expansion == CONSTANTS.EXPANSIONS.DRAGONFLIGHT then -- TODO DRAGONFLIGHT
+            level = "70"
+            quest = "|cffffff00|Hquest:43341:-1|h[Uniting the Isles]|h|r"
+        elseif expansion == CONSTANTS.EXPANSIONS.SHADOWLANDS then
+            level = "51" 
+            quest = "|cffffff00|Hquest:57559:-1|h[UNKNOWN TITLE]|h|r" 
         elseif expansion == CONSTANTS.EXPANSIONS.BFA then
             level = "50"
             quest = isHorde and "|cffffff00|Hquest:57559:-1|h[Uniting Zandalar]|h|r" or
@@ -899,6 +937,12 @@ local RetrieveWorldQuests = function(mapId)
                                 if C("showArtifactPower") then
                                     quest.hide = false
                                 end
+                            elseif CONSTANTS.DRAGONFLIGHT_REPUTATION_CURRENCY_IDS[currencyId] then
+                                currency.name = string.format("%s: %d %s", name, currency.amount, REPUTATION)
+                                rewardType[#rewardType + 1] = CONSTANTS.REWARD_TYPES.IRRELEVANT
+                                if C("showSLReputation") then
+                                    quest.hide = false
+                                end
                             elseif CONSTANTS.SHADOWLANDS_REPUTATION_CURRENCY_IDS[currencyId] then
                                 currency.name = string.format("%s: %d %s", name, currency.amount, REPUTATION)
                                 rewardType[#rewardType + 1] = CONSTANTS.REWARD_TYPES.IRRELEVANT
@@ -1114,6 +1158,8 @@ local RetrieveWorldQuests = function(mapId)
 
                     -- always show bounty quests or reputation for faction filter
                     if (C("alwaysShowBountyQuests") and #quest.bounties > 0) or
+                        -- Dragonflight
+                        -- TODO DRAGONFLIGHT
                         -- Shadowlands
                         (C("alwaysShowAscended") and quest.factionId == 2407) or
                         (C("alwaysShowUndyingArmy") and quest.factionId == 2410) or
@@ -1254,6 +1300,10 @@ end
 BWQ.bountyCache = {}
 BWQ.bountyDisplay = CreateFrame("Frame", "BWQ_BountyDisplay", BWQ)
 function BWQ:UpdateBountyData()
+    if expansion == CONSTANTS.EXPANSIONS.DRAGONFLIGHT then 
+        -- TODO DRAGONFLIGHT
+        return
+    end
     if expansion == CONSTANTS.EXPANSIONS.SHADOWLANDS then -- TODO: get map id for retrieving bounties
         BWQ.bountyDisplay:Hide()
         for i, item in pairs(BWQ.bountyCache) do
@@ -1265,8 +1315,7 @@ function BWQ:UpdateBountyData()
         item.button:Show()
     end
 
-    bounties = GetBountiesForMapID(expansion == CONSTANTS.EXPANSIONS.BFA and CONSTANTS.MAPID_KUL_TIRAS or
-                                       CONSTANTS.MAPID_DALARAN_BROKEN_ISLES) or {}
+    bounties = GetBountiesForMapID(expansion == CONSTANTS.EXPANSIONS.BFA and CONSTANTS.MAPID_KUL_TIRAS or CONSTANTS.MAPID_DALARAN_BROKEN_ISLES) or {}
     if #bounties == 0 then
         BWQ.bountyDisplay:Hide()
         return
@@ -1382,7 +1431,9 @@ local factionIncreaseString2 = FACTION_STANDING_INCREASED_ACH_BONUS:gsub("%%d", 
 local factionIncreaseString3 = FACTION_STANDING_INCREASED_GENERIC:gsub("%%s", "(.*)"):gsub(" %(%+.*%)", "")
 
 function BWQ:SetParagonFactionsByActiveExpansion()
-    if expansion == CONSTANTS.EXPANSIONS.SHADOWLANDS then
+    if expansion == CONSTANTS.EXPANSIONS.DRAGONFLIGHT then
+        -- TODO DRAGONFLIGHT
+    elseif expansion == CONSTANTS.EXPANSIONS.SHADOWLANDS then
         paragonFactions = CONSTANTS.PARAGON_FACTIONS.shadowlands
     elseif expansion == CONSTANTS.EXPANSIONS.BFA then
         paragonFactions = isHorde and CONSTANTS.PARAGON_FACTIONS.bfahorde or CONSTANTS.PARAGON_FACTIONS.bfaalliance
@@ -1722,6 +1773,7 @@ function BWQ:SwitchExpansion(expac)
     end
     BWQ:SetParagonFactionsByActiveExpansion()
 
+    BWQ.buttonDragonflight:SetAlpha(expac == CONSTANTS.EXPANSIONS.DRAGONFLIGHT and 1 or 0.4)
     BWQ.buttonShadowlands:SetAlpha(expac == CONSTANTS.EXPANSIONS.SHADOWLANDS and 1 or 0.4)
     BWQ.buttonBFA:SetAlpha(expac == CONSTANTS.EXPANSIONS.BFA and 1 or 0.4)
     BWQ.buttonLegion:SetAlpha(expac == CONSTANTS.EXPANSIONS.LEGION and 1 or 0.4)
@@ -2276,8 +2328,7 @@ function BWQ:SetupConfigMenu()
         text = ("|T%1$s:16:16|t  Reputation Tokens"):format("Interface\\Icons\\inv_scroll_11"),
         check = "showBFAReputation"
     }, {
-        text = ("|T%1$s:16:16|t  Service Medals"):format(isHorde and "Interface\\Icons\\ui_horde_honorboundmedal" or
-                                                             "Interface\\Icons\\ui_alliance_7legionmedal"),
+        text = ("|T%1$s:16:16|t  Service Medals"):format(isHorde and "Interface\\Icons\\ui_horde_honorboundmedal" or "Interface\\Icons\\ui_alliance_7legionmedal"),
         check = "showBFAServiceMedals"
     }, {
         text = ("|T%1$s:16:16|t  Honor"):format("Interface\\Icons\\Achievement_LegionPVPTier4"),
@@ -2391,6 +2442,13 @@ function BWQ:SetupConfigMenu()
     }, {
         text = "Always show quests for faction...",
         isTitle = true
+    }, {
+        text = "       Dragonflight",
+        submenu = {{
+            -- TODO DRAGONFLIGHT
+            text = "",
+            check = ""
+        }}
     }, {
         text = "       Shadowlands",
         submenu = {{

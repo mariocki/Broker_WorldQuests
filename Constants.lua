@@ -6,6 +6,7 @@ CONSTANTS.EXPANSIONS = {
 	LEGION = "LEGION",
 	BFA = "BFA",
 	SHADOWLANDS = "SHADOWLANDS",
+	DRAGONFLIGHT = "DRAGONFLIGHT"
 }
 CONSTANTS.FACTIONS = {
 	NEUTRAL = 0,
@@ -102,6 +103,10 @@ CONSTANTS.CURRENCIES_AFFECTED_BY_WARMODE = {
 	[1553] = true, -- azerite
 }
 
+CONSTANTS.DRAGONFLIGHT_REPUTATION_CURRENCY_IDS = {
+	-- TODO DRAGONFLIGHT
+}
+
 CONSTANTS.SHADOWLANDS_REPUTATION_CURRENCY_IDS = {
 	[1767] = true, -- Stygia/Venari
 	[1804] = true, -- The Ascended
@@ -146,6 +151,7 @@ CONSTANTS.FAMILY_FAMILIAR_QUEST_IDS = { -- WQ pet battle achievement
 
 CONSTANTS.ACHIEVEMENT_IDS = {
 	PET_BATTLE_WQ = {
+		[CONSTANTS.EXPANSIONS.DRAGONFLIGHT] = 14625, -- TODO DRAGONFLIGHT
 		[CONSTANTS.EXPANSIONS.SHADOWLANDS] = 14625,
 		[CONSTANTS.EXPANSIONS.BFA] = 12936,
 		[CONSTANTS.EXPANSIONS.LEGION] = 10876,
@@ -260,6 +266,8 @@ CONSTANTS.ACHIEVEMENT_CRITERIAS = {
 	[61787] = 14,
 	[61784] = 15,
 	[61783] = 16,
+	-- Dragonflight
+	-- TODO DRAGONFLIGHT
 }
 
 -- faction ids and icon name for factions with paragon reputation
@@ -305,6 +313,10 @@ CONSTANTS.PARAGON_FACTIONS = {
 		[2413] = "inv_cape_special_revendreth_d_01", -- court of harvesters
 		-- [2439] = "", -- avowed
 		[2465] = "inv_wand_1h_ardenweald_d_01", -- wild hunt
+	},
+	dragonflight = {
+		-- TODO DRAGONFLIGHT
+		order = {},
 	},
 }
 
