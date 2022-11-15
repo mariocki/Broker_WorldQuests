@@ -103,11 +103,14 @@ CONSTANTS.CURRENCIES_AFFECTED_BY_WARMODE = {
 }
 
 CONSTANTS.SHADOWLANDS_REPUTATION_CURRENCY_IDS = {
+	[1767] = true, -- Stygia/Venari
 	[1804] = true, -- The Ascended
 	[1805] = true, -- Undying Army
 	[1806] = true, -- Wild Hunt
 	[1807] = true, -- Court of Harvesters
 	[1877] = true, -- XP
+	[1880] = true, -- ?
+	[1907] = true, -- Death's Advance
 }
 
 CONSTANTS.BFA_REPUTATION_CURRENCY_IDS = {
