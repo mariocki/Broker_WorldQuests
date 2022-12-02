@@ -104,7 +104,9 @@ CONSTANTS.CURRENCIES_AFFECTED_BY_WARMODE = {
 }
 
 CONSTANTS.DRAGONFLIGHT_REPUTATION_CURRENCY_IDS = {
-	-- TODO DRAGONFLIGHT
+	[2031] = true, -- Dragonscale Expedition Commendation
+	[2108] = true, -- Maruuk Commendation
+	[2109] = true, -- Ikaara Commendation
 }
 
 CONSTANTS.SHADOWLANDS_REPUTATION_CURRENCY_IDS = {
@@ -315,8 +317,11 @@ CONSTANTS.PARAGON_FACTIONS = {
 		[2465] = "inv_wand_1h_ardenweald_d_01", -- wild hunt
 	},
 	dragonflight = {
-		-- TODO DRAGONFLIGHT
-		order = {},
+		order = { 2507, 2510, 2511, 2503 },
+		[2507] = "DragonflightMajorFactionsExpedition", -- Dragonscale Expedition
+		[2510] = "DragonflightMajorFactionsTuskarr", -- Iskaara Tuskarr
+		[2511] = "DragonflightMajorFactionsValdrakken", -- Valdrakken Accord
+		[2503] = "DragonflightMajorFactionsCentaur" -- Maruuk Centaur
 	},
 }
 

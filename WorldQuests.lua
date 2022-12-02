@@ -44,7 +44,11 @@ local isHorde = UnitFactionGroup("player") == "Horde"
 
 local MAP_ZONES = {
     [CONSTANTS.EXPANSIONS.DRAGONFLIGHT] = {
-        -- TODO DRAGONFLIGHT
+        [2112] = { id = 2112, name = GetMapInfo(2112).name, quests = {}, buttons = {}, }, 
+        [2022] = { id = 2022, name = GetMapInfo(2022).name, quests = {}, buttons = {}, }, -- The Waking Shores
+        [2023] = { id = 2023, name = GetMapInfo(2023).name, quests = {}, buttons = {}, }, -- Ohn'ahran Plains
+        [2024] = { id = 2024, name = GetMapInfo(2024).name, quests = {}, buttons = {}, }, -- Azure Span
+        [2025] = { id = 2025, name = GetMapInfo(2025).name, quests = {}, buttons = {}, }, -- Thaldraszus
     },
 	[CONSTANTS.EXPANSIONS.SHADOWLANDS] = {
 		[1525] = { id = 1525, name = GetMapInfo(1525).name, quests = {}, buttons = {}, }, --Revendreth 9.0
@@ -86,7 +90,7 @@ local MAP_ZONES = {
 }
 local MAP_ZONES_SORT = {
 	[CONSTANTS.EXPANSIONS.DRAGONFLIGHT] = {
-        -- TODO DRAGONFLIGHT
+        2022, 2023, 2024, 2025, 2112
     },
     [CONSTANTS.EXPANSIONS.SHADOWLANDS] = {
 		1525, 1533, 1536, 1565, 1543, 1961, 1970
@@ -103,7 +107,7 @@ local defaultConfig = {
     attachToWorldMap = false,
     showOnClick = false,
     usePerCharacterSettings = false,
-    expansion = CONSTANTS.EXPANSIONS.SHADOWLANDS, -- TODO DRAGONFLIGHT
+    expansion = CONSTANTS.EXPANSIONS.DRAGONFLIGHT,
     enableClickToOpenMap = false,
     enableTomTomWaypointsOnClick = true,
     alwaysShowBountyQuests = true,
@@ -201,7 +205,10 @@ local defaultConfig = {
     alwaysShowWildHunt = false,
 
     -- Dragonflight
-    -- TODO DRAGONFLIGHT
+    alwaysShowDragonscaleExpedition = false,
+    alwaysShowIskaaraTuskarr = false,
+    alwaysShowValdrakkenAccord = false,
+    alwaysShowMaruukCentaur = false,
 
     showPetBattle = true,
     hidePetBattleBountyQuests = false,
@@ -242,7 +249,7 @@ BWQ:Hide()
 
 BWQ.buttonDragonflight = CreateFrame("Button", nil, BWQ, "BackdropTemplate")
 BWQ.buttonDragonflight:SetSize(20, 15)
-BWQ.buttonDragonflight:SetPoint("TOPRIGHT", BWQ, "TOPRIGHT", -92, -8)
+BWQ.buttonDragonflight:SetPoint("TOPRIGHT", BWQ, "TOPRIGHT", -119, -8)
 BWQ.buttonDragonflight:SetBackdrop({
     bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
     tile = false,
@@ -259,7 +266,7 @@ BWQ.buttonDragonflight:SetBackdropColor(0.1, 0.1, 0.1)
 BWQ.buttonDragonflight.texture = BWQ.buttonDragonflight:CreateTexture(nil, "OVERLAY")
 BWQ.buttonDragonflight.texture:SetPoint("TOPLEFT", 1, -1)
 BWQ.buttonDragonflight.texture:SetPoint("BOTTOMRIGHT", -1, 1)
-BWQ.buttonDragonflight.texture:SetTexture("Interface\\Calendar\\Holidays\\Calendar_WeekendShadowlandsStart") -- TODO DRAGONFLIGHT
+BWQ.buttonDragonflight.texture:SetTexture("Interface\\Calendar\\Holidays\\Calendar_DragonflightStart")
 BWQ.buttonDragonflight.texture:SetTexCoord(0.15, 0.55, 0.23, 0.47)
 
 BWQ.buttonShadowlands = CreateFrame("Button", nil, BWQ, "BackdropTemplate")
@@ -404,7 +411,7 @@ local hasUnlockedWorldQuests
 function BWQ:WorldQuestsUnlocked()
     if not hasUnlockedWorldQuests then
         hasUnlockedWorldQuests = 
-                (expansion == CONSTANTS.EXPANSIONS.DRAGONFLIGHT and UnitLevel("player") >= 70 and IsQuestFlaggedCompleted(57559)) -- TODO DRAGONFLIGHT
+                (expansion == CONSTANTS.EXPANSIONS.DRAGONFLIGHT and UnitLevel("player") >= 70 and IsQuestFlaggedCompleted(71232))
 				or (expansion == CONSTANTS.EXPANSIONS.SHADOWLANDS and UnitLevel("player") >= 51 and IsQuestFlaggedCompleted(57559))
 				or (expansion == CONSTANTS.EXPANSIONS.BFA and UnitLevel("player") >= 50 and
 						(IsQuestFlaggedCompleted(51916) or IsQuestFlaggedCompleted(52451) -- horde
@@ -418,9 +425,9 @@ function BWQ:WorldQuestsUnlocked()
         end
 
         local level, quest
-        if expansion == CONSTANTS.EXPANSIONS.DRAGONFLIGHT then -- TODO DRAGONFLIGHT
+        if expansion == CONSTANTS.EXPANSIONS.DRAGONFLIGHT then
             level = "70"
-            quest = "|cffffff00|Hquest:43341:-1|h[Uniting the Isles]|h|r"
+            quest = "|cffffff00|Hquest:70750:-1|h[Aiding The Accord]|h|r"
         elseif expansion == CONSTANTS.EXPANSIONS.SHADOWLANDS then
             level = "51" 
             quest = "|cffffff00|Hquest:57559:-1|h[UNKNOWN TITLE]|h|r" 
@@ -739,9 +746,9 @@ local RetrieveWorldQuests = function(mapId)
     local currentTime = GetTime()
     local questList = GetQuestsForPlayerByMapID(mapId)
 
-		--if DEBUG then
-		--	print(string.format("[BWQ] number of quests for map %s is %s", mapId, #(questList)))
-		--end
+    --if DEBUG then
+    --	print(string.format("[BWQ] number of quests for map %s is %s", mapId, #(questList)))
+    --end
 
     warmodeEnabled = IsWarModeDesired()
 
@@ -1159,7 +1166,10 @@ local RetrieveWorldQuests = function(mapId)
                     -- always show bounty quests or reputation for faction filter
                     if (C("alwaysShowBountyQuests") and #quest.bounties > 0) or
                         -- Dragonflight
-                        -- TODO DRAGONFLIGHT
+                        (C("alwaysShowDragonscaleExpedition") and quest.factionId == 2507) or
+                        (C("alwaysShowIskaaraTuskarr") and quest.factionId == 2510) or
+                        (C("alwaysShowValdrakkenAccord") and quest.factionId == 2511) or
+                        (C("alwaysShowMaruukCentaur") and quest.factionId == 2503) or
                         -- Shadowlands
                         (C("alwaysShowAscended") and quest.factionId == 2407) or
                         (C("alwaysShowUndyingArmy") and quest.factionId == 2410) or
@@ -1302,6 +1312,10 @@ BWQ.bountyDisplay = CreateFrame("Frame", "BWQ_BountyDisplay", BWQ)
 function BWQ:UpdateBountyData()
     if expansion == CONSTANTS.EXPANSIONS.DRAGONFLIGHT then 
         -- TODO DRAGONFLIGHT
+        BWQ.bountyDisplay:Hide()
+        for i, item in pairs(BWQ.bountyCache) do
+            item.button:Hide()
+        end
         return
     end
     if expansion == CONSTANTS.EXPANSIONS.SHADOWLANDS then -- TODO: get map id for retrieving bounties
@@ -1432,7 +1446,7 @@ local factionIncreaseString3 = FACTION_STANDING_INCREASED_GENERIC:gsub("%%s", "(
 
 function BWQ:SetParagonFactionsByActiveExpansion()
     if expansion == CONSTANTS.EXPANSIONS.DRAGONFLIGHT then
-        -- TODO DRAGONFLIGHT
+        paragonFactions = CONSTANTS.PARAGON_FACTIONS.dragonflight
     elseif expansion == CONSTANTS.EXPANSIONS.SHADOWLANDS then
         paragonFactions = CONSTANTS.PARAGON_FACTIONS.shadowlands
     elseif expansion == CONSTANTS.EXPANSIONS.BFA then
@@ -1819,6 +1833,7 @@ function BWQ:UpdateBlock()
     if not BWQ:WorldQuestsUnlocked() then
         BWQ:SetHeight(offsetTop * -1 + 20 + 30) -- padding + errorFS height
         BWQ:SetWidth(math.max(BWQ.factionDisplay:GetWidth(), BWQ.errorFS:GetWidth()) + 20)
+        print("WQ not unlocked")
         return
     end
 
@@ -2445,9 +2460,17 @@ function BWQ:SetupConfigMenu()
     }, {
         text = "       Dragonflight",
         submenu = {{
-            -- TODO DRAGONFLIGHT
-            text = "",
-            check = ""
+            text = "Dragonscale Expedition",
+            check = "alwaysShowDragonscaleExpedition"
+        }, {
+            text = "Iskaara Tuskarr",
+            check = "alwaysShowIskaaraTuskarr"
+        }, {
+            text = "Maruuk Centaur",
+            check = "alwaysShowMaruukCentaur"
+        }, {
+            text = "Valdrakken Accord",
+            check = "alwaysShowValdrakkenAccord"
         }}
     }, {
         text = "       Shadowlands",
