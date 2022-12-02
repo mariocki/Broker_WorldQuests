@@ -44,7 +44,7 @@ local isHorde = UnitFactionGroup("player") == "Horde"
 
 local MAP_ZONES = {
     [CONSTANTS.EXPANSIONS.DRAGONFLIGHT] = {
-        [2112] = { id = 2112, name = GetMapInfo(2112).name, quests = {}, buttons = {}, }, 
+        [2112] = { id = 2112, name = GetMapInfo(2112).name, quests = {}, buttons = {}, },
         [2022] = { id = 2022, name = GetMapInfo(2022).name, quests = {}, buttons = {}, }, -- The Waking Shores
         [2023] = { id = 2023, name = GetMapInfo(2023).name, quests = {}, buttons = {}, }, -- Ohn'ahran Plains
         [2024] = { id = 2024, name = GetMapInfo(2024).name, quests = {}, buttons = {}, }, -- Azure Span
@@ -410,7 +410,7 @@ end
 local hasUnlockedWorldQuests
 function BWQ:WorldQuestsUnlocked()
     if not hasUnlockedWorldQuests then
-        hasUnlockedWorldQuests = 
+        hasUnlockedWorldQuests =
                 (expansion == CONSTANTS.EXPANSIONS.DRAGONFLIGHT and UnitLevel("player") >= 70 and IsQuestFlaggedCompleted(71232))
 				or (expansion == CONSTANTS.EXPANSIONS.SHADOWLANDS and UnitLevel("player") >= 51 and IsQuestFlaggedCompleted(57559))
 				or (expansion == CONSTANTS.EXPANSIONS.BFA and UnitLevel("player") >= 50 and
@@ -429,8 +429,8 @@ function BWQ:WorldQuestsUnlocked()
             level = "70"
             quest = "|cffffff00|Hquest:70750:-1|h[Aiding The Accord]|h|r"
         elseif expansion == CONSTANTS.EXPANSIONS.SHADOWLANDS then
-            level = "51" 
-            quest = "|cffffff00|Hquest:57559:-1|h[UNKNOWN TITLE]|h|r" 
+            level = "51"
+            quest = "|cffffff00|Hquest:57559:-1|h[UNKNOWN TITLE]|h|r"
         elseif expansion == CONSTANTS.EXPANSIONS.BFA then
             level = "50"
             quest = isHorde and "|cffffff00|Hquest:57559:-1|h[Uniting Zandalar]|h|r" or
@@ -691,6 +691,7 @@ end
 function BWQ:CalculateMapPosition(x, y)
     return x * WorldMapFrame:GetCanvas():GetWidth(), -1 * y * WorldMapFrame:GetCanvas():GetHeight()
 end
+
 local currentTomTomWaypoint
 local Row_OnClick = function(row)
     if IsShiftKeyDown() then
@@ -746,13 +747,13 @@ local RetrieveWorldQuests = function(mapId)
     local currentTime = GetTime()
     local questList = GetQuestsForPlayerByMapID(mapId)
 
-    --if DEBUG then
-    --	print(string.format("[BWQ] number of quests for map %s is %s", mapId, #(questList)))
-    --end
+    if DEBUG then
+        print(string.format("[BWQ] number of quests for map %s is %s", mapId, #(questList)))
+    end
 
     warmodeEnabled = IsWarModeDesired()
 
-    -- quest object fields are: x, y, floor, numObjectives, questId, inProgress
+    -- quest object fields are: questId, x, y, inProgress, numObjectives, mapID, isQuestStart, isDaily, isCombatAllyQuest, childDepth
     if questList then
         numQuests = 0
         MAP_ZONES[expansion][mapId].questsSort = {}
@@ -761,41 +762,41 @@ local RetrieveWorldQuests = function(mapId)
         for i, q in ipairs(questList) do
             if HaveQuestData(q.questId) and q.mapID == mapId then
                 --[[
-					questTagInfo = {
-						tagId = 116
-						tagName = Blacksmithing World Quest
-						worldQuestType =
-							1 -> profession,
-							2 -> pve?
-							3 -> pvp
-							4 -> battle pet
-							5 -> ??
-							6 -> dungeon
-							7 -> invasion
-							8 -> raid
-						quality =
-							1 -> normal
-							2 -> rare
-							3 -> epic
-						isElite = true/false
-						tradeskillLineIndex = some number, no idea of meaning atm
-					}
-				]]
+                    questTagInfo = {
+                        tagId = 116
+                        tagName = Blacksmithing World Quest
+                        worldQuestType =
+                            1 -> profession,
+                            2 -> pve?
+                            3 -> pvp
+                            4 -> battle pet
+                            5 -> ??
+                            6 -> dungeon
+                            7 -> invasion
+                            8 -> raid
+                        quality =
+                            1 -> normal
+                            2 -> rare
+                            3 -> epic
+                        isElite = true/false
+                        tradeskillLineIndex = some number, no idea of meaning atm
+                    }
+                ]]
 
                 timeLeft = GetQuestTimeLeftMinutes(q.questId) or 0
                 questTagInfo = GetQuestTagInfo(q.questId)
 
-								if questTagInfo == nil then
-									if DEBUG then
-										print(string.format("[BWQ] Quest has no Tag info ID %s", q.questId))
-									end
-									questTagInfo = {}
-									questTagInfo.tagName = "?"
-									questTagInfo.tagID = q.questId
-									questTagInfo.worldQuestType = CONSTANTS.WORLD_QUEST_TYPES
-									questTagInfo.quality = 1
-									questTagInfo.isElite = false
-								end
+                if questTagInfo == nil then
+                    if DEBUG then
+                        print(string.format("[BWQ] Quest has no Tag info ID %s", q.questId))
+                    end
+                    questTagInfo = {}
+                    questTagInfo.tagName = "?"
+                    questTagInfo.tagID = q.questId
+                    questTagInfo.worldQuestType = CONSTANTS.WORLD_QUEST_TYPES
+                    questTagInfo.quality = 1
+                    questTagInfo.isElite = false
+                end
 
                 if questTagInfo and questTagInfo.worldQuestType then
                     local questId = q.questId
@@ -854,8 +855,7 @@ local RetrieveWorldQuests = function(mapId)
 
                             local _, _, _, _, _, _, _, _, equipSlot, _, _, classId, subClassId = GetItemInfo(quest.reward.itemId)
                             if classId == 7 then
-                                quest.sort = quest.sort > CONSTANTS.SORT_ORDER.PROFESSION and quest.sort or
-                                                 CONSTANTS.SORT_ORDER.PROFESSION
+                                quest.sort = quest.sort > CONSTANTS.SORT_ORDER.PROFESSION and quest.sort or CONSTANTS.SORT_ORDER.PROFESSION
                                 if quest.reward.itemId == 124124 then
                                     rewardType[#rewardType + 1] = CONSTANTS.REWARD_TYPES.BLOODOFSARGERAS
                                 end
@@ -863,8 +863,7 @@ local RetrieveWorldQuests = function(mapId)
                                     quest.hide = false
                                 end
                             elseif equipSlot ~= "" or itemId == 163857 --[[ Azerite Armor Cache ]] then
-                                quest.sort = quest.sort > CONSTANTS.SORT_ORDER.EQUIP and quest.sort or
-                                                 CONSTANTS.SORT_ORDER.EQUIP
+                                quest.sort = quest.sort > CONSTANTS.SORT_ORDER.EQUIP and quest.sort or CONSTANTS.SORT_ORDER.EQUIP
                                 quest.reward.realItemLevel = BWQ:GetItemLevelValueForQuestId(quest.questId)
                                 rewardType[#rewardType + 1] = CONSTANTS.REWARD_TYPES.GEAR
 
@@ -872,15 +871,13 @@ local RetrieveWorldQuests = function(mapId)
                                     quest.hide = false
                                 end
                             elseif itemId == 137642 then
-                                quest.sort = quest.sort > CONSTANTS.SORT_ORDER.ITEM and quest.sort or
-                                                 CONSTANTS.SORT_ORDER.ITEM
+                                quest.sort = quest.sort > CONSTANTS.SORT_ORDER.ITEM and quest.sort or CONSTANTS.SORT_ORDER.ITEM
                                 rewardType[#rewardType + 1] = CONSTANTS.REWARD_TYPES.MARK_OF_HONOR
                                 if C("showItems") and C("showMarkOfHonor") then
                                     quest.hide = false
                                 end
                             else
-                                quest.sort = quest.sort > CONSTANTS.SORT_ORDER.ITEM and quest.sort or
-                                                 CONSTANTS.SORT_ORDER.ITEM
+                                quest.sort = quest.sort > CONSTANTS.SORT_ORDER.ITEM and quest.sort or CONSTANTS.SORT_ORDER.ITEM
                                 rewardType[#rewardType + 1] = CONSTANTS.REWARD_TYPES.IRRELEVANT
                                 if C("showItems") and C("showOtherItems") then
                                     quest.hide = false
@@ -894,8 +891,7 @@ local RetrieveWorldQuests = function(mapId)
                     if money > 20000 then -- >2g, hides these silly low gold extra rewards
                         hasReward = true
                         quest.reward.money = floor(BWQ:ValueWithWarModeBonus(quest.questId, money) / 10000) * 10000
-                        quest.sort = quest.sort > CONSTANTS.SORT_ORDER.MONEY and quest.sort or
-                                         CONSTANTS.SORT_ORDER.MONEY
+                        quest.sort = quest.sort > CONSTANTS.SORT_ORDER.MONEY and quest.sort or CONSTANTS.SORT_ORDER.MONEY
                         rewardType[#rewardType + 1] = CONSTANTS.REWARD_TYPES.MONEY
 
                         if money < 1000000 then
@@ -913,14 +909,14 @@ local RetrieveWorldQuests = function(mapId)
                     if honor > 0 then
                         hasReward = true
                         quest.reward.honor = honor
-                        quest.sort = quest.sort > CONSTANTS.SORT_ORDER.HONOR and quest.sort or
-                                         CONSTANTS.SORT_ORDER.HONOR
+                        quest.sort = quest.sort > CONSTANTS.SORT_ORDER.HONOR and quest.sort or CONSTANTS.SORT_ORDER.HONOR
                         rewardType[#rewardType + 1] = CONSTANTS.REWARD_TYPES.HONOR
 
                         if C("showHonor") then
                             quest.hide = false
                         end
                     end
+
                     -- currency reward
                     local numQuestCurrencies = GetNumQuestLogRewardCurrencies(quest.questId)
                     quest.reward.currencies = {}
@@ -1016,11 +1012,9 @@ local RetrieveWorldQuests = function(mapId)
                             quest.reward.currencies[#quest.reward.currencies + 1] = currency
 
                             if currencyId == 1553 then
-                                quest.sort = quest.sort > CONSTANTS.SORT_ORDER.ARTIFACTPOWER and quest.sort or
-                                                 CONSTANTS.SORT_ORDER.ARTIFACTPOWER
+                                quest.sort = quest.sort > CONSTANTS.SORT_ORDER.ARTIFACTPOWER and quest.sort or CONSTANTS.SORT_ORDER.ARTIFACTPOWER
                             else
-                                quest.sort = quest.sort > CONSTANTS.SORT_ORDER.RESOURCES and quest.sort or
-                                                 CONSTANTS.SORT_ORDER.RESOURCES
+                                quest.sort = quest.sort > CONSTANTS.SORT_ORDER.RESOURCES and quest.sort or CONSTANTS.SORT_ORDER.RESOURCES
                             end
 
                         end
@@ -1049,11 +1043,12 @@ local RetrieveWorldQuests = function(mapId)
                             quest.hide = false
                         else
                             quest.hide = true
+                            if DEBUG then
+                                print(string.format("[BWQ] Hiding pet battle quest ID %s", q.questId))
+                            end
                         end
 
-                        quest.isMissingAchievementCriteria =
-                            BWQ:IsQuestAchievementCriteriaMissing(CONSTANTS.ACHIEVEMENT_IDS.PET_BATTLE_WQ[expansion],
-                                quest.questId)
+                        quest.isMissingAchievementCriteria = BWQ:IsQuestAchievementCriteriaMissing(CONSTANTS.ACHIEVEMENT_IDS.PET_BATTLE_WQ[expansion], quest.questId)
                     elseif quest.worldQuestType == CONSTANTS.WORLD_QUEST_TYPES.PROFESSION then
                         if C("showProfession") then
 
@@ -1063,6 +1058,9 @@ local RetrieveWorldQuests = function(mapId)
                                     quest.hide = false
                                 else
                                     quest.hide = true
+                                    if DEBUG then
+                                        print(string.format("[BWQ] Hiding herbalism quest ID %s", q.questId))
+                                    end
                                 end
                             elseif quest.tagId == 120 then
                                 questType[#questType + 1] = CONSTANTS.QUEST_TYPES.MINING
@@ -1070,6 +1068,9 @@ local RetrieveWorldQuests = function(mapId)
                                     quest.hide = false
                                 else
                                     quest.hide = true
+                                    if DEBUG then
+                                        print(string.format("[BWQ] Hiding mining quest ID %s", q.questId))
+                                    end
                                 end
                             elseif quest.tagId == 130 then
                                 questType[#questType + 1] = CONSTANTS.QUEST_TYPES.FISHING
@@ -1080,6 +1081,9 @@ local RetrieveWorldQuests = function(mapId)
                                     quest.hide = false
                                 else
                                     quest.hide = true
+                                    if DEBUG then
+                                        print(string.format("[BWQ] Hiding fishing quest ID %s", q.questId))
+                                    end
                                 end
                             elseif quest.tagId == 124 then
                                 questType[#questType + 1] = CONSTANTS.QUEST_TYPES.SKINNING
@@ -1087,80 +1091,125 @@ local RetrieveWorldQuests = function(mapId)
                                     quest.hide = false
                                 else
                                     quest.hide = true
+                                    if DEBUG then
+                                        print(string.format("[BWQ] Hiding skinning quest ID %s", q.questId))
+                                    end
                                 end
                             elseif quest.tagId == 118 then
                                 if C("showProfessionAlchemy") then
                                     quest.hide = false
                                 else
                                     quest.hide = true
+                                    if DEBUG then
+                                        print(string.format("[BWQ] Hiding alchemy quest ID %s", q.questId))
+                                    end
                                 end
                             elseif quest.tagId == 129 then
                                 if C("showProfessionArchaeology") then
                                     quest.hide = false
                                 else
                                     quest.hide = true
+                                    if DEBUG then
+                                        print(string.format("[BWQ] Hiding archaeology quest ID %s", q.questId))
+                                    end
                                 end
                             elseif quest.tagId == 116 then
                                 if C("showProfessionBlacksmithing") then
                                     quest.hide = false
                                 else
                                     quest.hide = true
+                                    if DEBUG then
+                                        print(string.format("[BWQ] Hiding blacksmithing quest ID %s", q.questId))
+                                    end
                                 end
                             elseif quest.tagId == 131 then
                                 if C("showProfessionCooking") then
                                     quest.hide = false
                                 else
                                     quest.hide = true
+                                    if DEBUG then
+                                        print(string.format("[BWQ] Hiding cooking quest ID %s", q.questId))
+                                    end
                                 end
                             elseif quest.tagId == 123 then
                                 if C("showProfessionEnchanting") then
                                     quest.hide = false
                                 else
                                     quest.hide = true
+                                    if DEBUG then
+                                        print(string.format("[BWQ] Hiding enchanting quest ID %s", q.questId))
+                                    end
                                 end
                             elseif quest.tagId == 122 then
                                 if C("showProfessionEngineering") then
                                     quest.hide = false
                                 else
                                     quest.hide = true
+                                    if DEBUG then
+                                        print(string.format("[BWQ] Hiding engineering quest ID %s", q.questId))
+                                    end
                                 end
                             elseif quest.tagId == 126 then
                                 if C("showProfessionInscription") then
                                     quest.hide = false
                                 else
                                     quest.hide = true
+                                    if DEBUG then
+                                        print(string.format("[BWQ] Hiding inscription quest ID %s", q.questId))
+                                    end
                                 end
                             elseif quest.tagId == 125 then
                                 if C("showProfessionJewelcrafting") then
                                     quest.hide = false
                                 else
                                     quest.hide = true
+                                    if DEBUG then
+                                        print(string.format("[BWQ] Hiding jewelcrafting quest ID %s", q.questId))
+                                    end
                                 end
                             elseif quest.tagId == 117 then
                                 if C("showProfessionLeatherworking") then
                                     quest.hide = false
                                 else
                                     quest.hide = true
+                                    if DEBUG then
+                                        print(string.format("[BWQ] Hiding leatherworking quest ID %s", q.questId))
+                                    end
                                 end
                             elseif quest.tagId == 121 then
                                 if C("showProfessionTailoring") then
                                     quest.hide = false
                                 else
                                     quest.hide = true
+                                    if DEBUG then
+                                        print(string.format("[BWQ] Hiding tailoring quest ID %s", q.questId))
+                                    end
                                 end
                             end
                         else
                             quest.hide = true
+                            if DEBUG then
+                                print(string.format("[BWQ] Hiding ??? quest ID %s", q.questId))
+                            end
                         end
                     elseif not C("showPvP") and quest.worldQuestType == CONSTANTS.WORLD_QUEST_TYPES.PVP then
                         quest.hide = true
+                        if DEBUG then
+                            print(string.format("[BWQ] Hiding PVP quest ID %s", q.questId))
+                        end
                     elseif not C("showDungeon") and quest.worldQuestType == CONSTANTS.WORLD_QUEST_TYPES.DUNGEON then
                         quest.hide = true
+                        if DEBUG then
+                            print(string.format("[BWQ] Hiding dungeon quest ID %s", q.questId))
+                        end
                     end
 
                     -- only show quest that are blue or above quality
                     if (C("onlyShowRareOrAbove") and quest.quality < 1) then
                         quest.hide = true
+                        if DEBUG then
+                            print(string.format("[BWQ] Hiding low quality quest ID %s", q.questId))
+                        end
                     end
 
                     -- always show bounty quests or reputation for faction filter
@@ -1206,6 +1255,9 @@ local RetrieveWorldQuests = function(mapId)
                         if C("hidePetBattleBountyQuests") and not C("showPetBattle") and quest.worldQuestType ==
                             CONSTANTS.WORLD_QUEST_TYPES.PETBATTLE then
                             quest.hide = true
+                            if DEBUG then
+                                print(string.format("[BWQ] Hiding pet battle bounty quest ID %s", q.questId))
+                            end
                         else
                             quest.hide = false
                         end
@@ -1227,10 +1279,8 @@ local RetrieveWorldQuests = function(mapId)
                                 if rtype == CONSTANTS.REWARD_TYPES.ARTIFACTPOWER and quest.reward.azeriteAmount then
                                     BWQ.totalArtifactPower = BWQ.totalArtifactPower + (quest.reward.azeriteAmount or 0)
                                 end
-                                if rtype == CONSTANTS.REWARD_TYPES.WAKENING_ESSENCES and
-                                    quest.reward.wakeningEssencesAmount then
-                                    BWQ.totalWakeningEssences = BWQ.totalWakeningEssences +
-                                                                    quest.reward.wakeningEssencesAmount
+                                if rtype == CONSTANTS.REWARD_TYPES.WAKENING_ESSENCES and quest.reward.wakeningEssencesAmount then
+                                    BWQ.totalWakeningEssences = BWQ.totalWakeningEssences + quest.reward.wakeningEssencesAmount
                                 end
                                 if rtype == CONSTANTS.REWARD_TYPES.WAR_RESOURCES and quest.reward.warResourceAmount then
                                     BWQ.totalWarResources = BWQ.totalWarResources + quest.reward.warResourceAmount
@@ -1243,8 +1293,7 @@ local RetrieveWorldQuests = function(mapId)
                                 end
                                 if rtype == CONSTANTS.REWARD_TYPES.LEGIONFALL_SUPPLIES and
                                     quest.reward.legionfallSuppliesAmount then
-                                    BWQ.totalLegionfallSupplies = BWQ.totalLegionfallSupplies +
-                                                                      quest.reward.legionfallSuppliesAmount
+                                    BWQ.totalLegionfallSupplies = BWQ.totalLegionfallSupplies + quest.reward.legionfallSuppliesAmount
                                 end
                                 if rtype == CONSTANTS.REWARD_TYPES.HONOR and quest.reward.honor then
                                     BWQ.totalHonor = BWQ.totalHonor + quest.reward.honor
@@ -1262,8 +1311,7 @@ local RetrieveWorldQuests = function(mapId)
                                     BWQ.totalMarkOfHonor = BWQ.totalMarkOfHonor + quest.reward.itemQuantity
                                 end
                                 if rtype == CONSTANTS.REWARD_TYPES.PRISMATIC_MANAPEARL then
-                                    BWQ.totalPrismaticManapearl = BWQ.totalPrismaticManapearl +
-                                                                      quest.reward.prismaticManapearlAmount
+                                    BWQ.totalPrismaticManapearl = BWQ.totalPrismaticManapearl + quest.reward.prismaticManapearlAmount
                                 end
                             end
                         end
@@ -1283,8 +1331,16 @@ local RetrieveWorldQuests = function(mapId)
                                 end
                             end
                         end
-                    end						
-								end
+                    else
+                        if DEBUG then
+                            print(string.format("[BWQ] Hidden quest ID %s", q.questId))
+                    end
+                    end
+                end
+            else
+                if DEBUG then
+                    print(string.format("[BWQ] Questdata unavailable or on wrong map for quest Id %s on mapId %s", q.questId, q.mapID))
+                end
             end
         end
 
@@ -1310,7 +1366,7 @@ end
 BWQ.bountyCache = {}
 BWQ.bountyDisplay = CreateFrame("Frame", "BWQ_BountyDisplay", BWQ)
 function BWQ:UpdateBountyData()
-    if expansion == CONSTANTS.EXPANSIONS.DRAGONFLIGHT then 
+    if expansion == CONSTANTS.EXPANSIONS.DRAGONFLIGHT then
         -- TODO DRAGONFLIGHT
         BWQ.bountyDisplay:Hide()
         for i, item in pairs(BWQ.bountyCache) do
@@ -2056,11 +2112,17 @@ function BWQ:UpdateBlock()
                 end
                 button.icon:SetSize(12, 12)
 
-                button.titleFS:SetText(string.format("%s%s%s|r", button.quest.isNew and "|cffe5cc80NEW|r  " or "",
-                    button.quest.isMissingAchievementCriteria and "|cff1EFF00" or
-                        WORLD_QUEST_QUALITY_COLORS[button.quest.quality].hex, button.quest.title))
-                -- local titleWidth = button.titleFS:GetStringWidth()
-                -- if titleWidth > titleMaxWidth then titleMaxWidth = titleWidth end
+                if button.quest.quality ~= nil then
+                    button.titleFS:SetText(string.format("%s%s%s|r", button.quest.isNew and "|cffe5cc80NEW|r  " or "",
+                        button.quest.isMissingAchievementCriteria and "|cff1EFF00" or
+                            WORLD_QUEST_QUALITY_COLORS[button.quest.quality].hex, button.quest.title))
+                    -- local titleWidth = button.titleFS:GetStringWidth()
+                    -- if titleWidth > titleMaxWidth then titleMaxWidth = titleWidth end
+                else
+                    button.titleFS:SetText(string.format("%s%s%s|r", button.quest.isNew and "|cffe5cc80NEW|r  " or "",
+                        button.quest.isMissingAchievementCriteria and "|cff1EFF00" or
+                            "|cffA0A0A0", button.quest.title))
+                end
 
                 if GetQuestWatchType(button.quest.questId) == Enum.QuestWatchType.Manual or GetSuperTrackedQuestID() ==
                     button.quest.questId then
