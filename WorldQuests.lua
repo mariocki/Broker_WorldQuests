@@ -44,14 +44,15 @@ local isHorde = UnitFactionGroup("player") == "Horde"
 
 local MAP_ZONES = {
     [CONSTANTS.EXPANSIONS.DRAGONFLIGHT] = {
-        [2112] = { id = 2112, name = GetMapInfo(2112).name, quests = {}, buttons = {}, },
+        [2112] = { id = 2112, name = GetMapInfo(2112).name, quests = {}, buttons = {}, }, -- Valdrakken
+        [2085] = { id = 2085, name = GetMapInfo(2085).name, quests = {}, buttons = {}, }, -- Primalist Tomorrow
         [2022] = { id = 2022, name = GetMapInfo(2022).name, quests = {}, buttons = {}, }, -- The Waking Shores
         [2023] = { id = 2023, name = GetMapInfo(2023).name, quests = {}, buttons = {}, }, -- Ohn'ahran Plains
         [2024] = { id = 2024, name = GetMapInfo(2024).name, quests = {}, buttons = {}, }, -- Azure Span
         [2025] = { id = 2025, name = GetMapInfo(2025).name, quests = {}, buttons = {}, }, -- Thaldraszus
     },
 	[CONSTANTS.EXPANSIONS.SHADOWLANDS] = {
-		[1525] = { id = 1525, name = GetMapInfo(1525).name, quests = {}, buttons = {}, }, --Revendreth 9.0
+		[1525] = { id = 1525, name = GetMapInfo(1525).name, quests = {}, buttons = {}, }, -- Revendreth 9.0
 		[1533] = { id = 1533, name = GetMapInfo(1533).name, quests = {}, buttons = {}, }, -- Bastion 9.0
 		[1536] = { id = 1536, name = GetMapInfo(1536).name, quests = {}, buttons = {}, }, -- Maldraxxus 9.0
 		[1565] = { id = 1565, name = GetMapInfo(1565).name, quests = {}, buttons = {}, }, -- Ardenwald 9.0
@@ -90,7 +91,7 @@ local MAP_ZONES = {
 }
 local MAP_ZONES_SORT = {
 	[CONSTANTS.EXPANSIONS.DRAGONFLIGHT] = {
-        2022, 2023, 2024, 2025, 2112
+        2022, 2023, 2024, 2025, 2085, 2112
     },
     [CONSTANTS.EXPANSIONS.SHADOWLANDS] = {
 		1525, 1533, 1536, 1565, 1543, 1961, 1970
