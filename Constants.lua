@@ -104,8 +104,9 @@ CONSTANTS.CURRENCIES_AFFECTED_BY_WARMODE = {
 }
 
 CONSTANTS.DRAGONFLIGHT_REPUTATION_CURRENCY_IDS = {
-	[2003] = true, -- ??
+	[2003] = true, -- Dragon Isles Supply Cache
 	[2031] = true, -- Dragonscale Expedition Commendation
+	[2106] = true, -- Valdrakken Accord Commendation
 	[2108] = true, -- Maruuk Commendation
 	[2109] = true, -- Ikaara Commendation
 }

@@ -369,6 +369,7 @@ local Block_OnLeave = function(self)
         end
     end
 end
+
 BWQ:SetScript("OnLeave", Block_OnLeave)
 
 BWQ.slider = CreateFrame("Slider", nil, BWQ, "BackdropTemplate")
@@ -507,8 +508,10 @@ local billionSearchLocalized = {
     ruRU = "млрд",
     zhTW = "億"
 }
+
 local BWQScanTooltip = CreateFrame("GameTooltip", "BWQScanTooltip", nil, "GameTooltipTemplate", "BackdropTemplate")
 BWQScanTooltip:Hide()
+
 function BWQ:GetArtifactPowerValue(itemId)
     local _, itemLink = GetItemInfo(itemId)
     BWQScanTooltip:SetOwner(BWQ, "ANCHOR_NONE")
@@ -545,6 +548,7 @@ function BWQ:GetArtifactPowerValue(itemId)
     end
     return "0"
 end
+
 function BWQ:GetItemLevelValueForQuestId(questId)
     BWQScanTooltip:SetOwner(BWQ, "ANCHOR_NONE")
     BWQScanTooltip:SetQuestLogItem("reward", 1, questId)
@@ -1335,7 +1339,7 @@ local RetrieveWorldQuests = function(mapId)
                     else
                         if DEBUG then
                             print(string.format("[BWQ] Hidden quest ID %s", q.questId))
-                    end
+                        end
                     end
                 end
             else
@@ -1512,6 +1516,7 @@ function BWQ:SetParagonFactionsByActiveExpansion()
         paragonFactions = CONSTANTS.PARAGON_FACTIONS.legion
     end
 end
+
 BWQ:SetParagonFactionsByActiveExpansion()
 
 function BWQ:OnFactionUpdate(msg)
@@ -1677,6 +1682,7 @@ function BWQ:UpdateParagonData()
         BWQ.factionDisplay:Hide()
     end
 end
+
 function BWQ:UpdateFactionDisplayVisible()
     if not C("hideFactionParagonBars") then
         BWQ:RegisterEvent("CHAT_MSG_COMBAT_FACTION_CHANGE")
@@ -1698,8 +1704,16 @@ function BWQ:UpdateQuestData()
     BWQ.totalArtifactPower, BWQ.totalGold, BWQ.totalWarResources, BWQ.totalServiceMedals, BWQ.totalResources, BWQ.totalLegionfallSupplies, BWQ.totalHonor, BWQ.totalGear, BWQ.totalHerbalism, BWQ.totalMining, BWQ.totalFishing, BWQ.totalSkinning, BWQ.totalBloodOfSargeras, BWQ.totalWakeningEssences, BWQ.totalMarkOfHonor, BWQ.totalPrismaticManapearl =
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
+    if DEBUG then
+        print(string.format("[BWQ] Scanning quests"))
+    end
+
     for mapId in next, MAP_ZONES[expansion] do
         RetrieveWorldQuests(mapId)
+    end
+
+    if DEBUG then
+        print(string.format("[BWQ] End Scanning quests"))
     end
 
     numQuestsTotal = 0
@@ -2746,6 +2760,7 @@ local SetFlightMapPins = function(self)
         end
     end
 end
+
 function BWQ:AddFlightMapHook()
     hooksecurefunc(WorldQuestDataProviderMixin, "RefreshAllData", SetFlightMapPins)
 end
