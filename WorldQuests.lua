@@ -413,7 +413,7 @@ local hasUnlockedWorldQuests
 function BWQ:WorldQuestsUnlocked()
     if not hasUnlockedWorldQuests then
         hasUnlockedWorldQuests =
-                (expansion == CONSTANTS.EXPANSIONS.DRAGONFLIGHT and UnitLevel("player") >= 70 and IsQuestFlaggedCompleted(71232))
+                (expansion == CONSTANTS.EXPANSIONS.DRAGONFLIGHT and BWQ:IsAchievementCompleted(16363))
 				or (expansion == CONSTANTS.EXPANSIONS.SHADOWLANDS and UnitLevel("player") >= 51 and IsQuestFlaggedCompleted(57559))
 				or (expansion == CONSTANTS.EXPANSIONS.BFA and UnitLevel("player") >= 50 and
 						(IsQuestFlaggedCompleted(51916) or IsQuestFlaggedCompleted(52451) -- horde
@@ -567,6 +567,12 @@ function BWQ:ValueWithWarModeBonus(questId, value)
     local multiplier = warmodeEnabled and 1.1 or 1
     return floor(value * multiplier + 0.5)
 end
+
+function BWQ:IsAchievementCompleted(achievementId)
+    local _, _, _, completed = GetAchievementInfo(achievementId)
+    return completed
+end
+
 
 function BWQ:IsQuestAchievementCriteriaMissing(achievementId, questId)
     local criteriaId = CONSTANTS.ACHIEVEMENT_CRITERIAS[questId]
