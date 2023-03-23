@@ -44,6 +44,7 @@ local isHorde = UnitFactionGroup("player") == "Horde"
 
 local MAP_ZONES = {
     [CONSTANTS.EXPANSIONS.DRAGONFLIGHT] = {
+        [2151] = { id = 2151, name = GetMapInfo(2151).name, quests = {}, buttons = {}, }, -- Forbidden Reach
         [2112] = { id = 2112, name = GetMapInfo(2112).name, quests = {}, buttons = {}, }, -- Valdrakken
         [2085] = { id = 2085, name = GetMapInfo(2085).name, quests = {}, buttons = {}, }, -- Primalist Tomorrow
         [2022] = { id = 2022, name = GetMapInfo(2022).name, quests = {}, buttons = {}, }, -- The Waking Shores
@@ -91,7 +92,7 @@ local MAP_ZONES = {
 }
 local MAP_ZONES_SORT = {
 	[CONSTANTS.EXPANSIONS.DRAGONFLIGHT] = {
-        2022, 2023, 2024, 2025, 2085, 2112
+        2022, 2023, 2024, 2025, 2085, 2112, 2151
     },
     [CONSTANTS.EXPANSIONS.SHADOWLANDS] = {
 		1525, 1533, 1536, 1565, 1543, 1961, 1970
