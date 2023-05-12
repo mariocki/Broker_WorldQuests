@@ -1018,6 +1018,14 @@ local RetrieveWorldQuests = function(mapId)
                                 if C("showPrismaticManapearl") then
                                     quest.hide = false
                                 end
+                            elseif currencyId == 2118 then -- elemental overflow
+                                rewardType[#rewardType + 1] = CONSTANTS.REWARD_TYPES.ELEMENTAL_OVERFLOW
+                                quest.reward.elementalOverflow = currency.amount
+                                quest.hide = false
+                            elseif currencyId == 2245 then -- flightstones
+                                rewardType[#rewardType + 1] = CONSTANTS.REWARD_TYPES.FLIGHTSTONES
+                                quest.reward.flightStones = currency.amount
+                                quest.hide = false
                             else
                                 if DEBUG then
                                     print(string.format("[BWQ] Unhandled currency: ID %s", currencyId))
