@@ -111,6 +111,8 @@ CONSTANTS.DRAGONFLIGHT_REPUTATION_CURRENCY_IDS = {
 	[2106] = true, -- Valdrakken Accord Commendation
 	[2108] = true, -- Maruuk Commendation
 	[2109] = true, -- Ikaara Commendation
+	[2420] = true, -- Loamm Niffen Commendation
+
 }
 
 CONSTANTS.SHADOWLANDS_REPUTATION_CURRENCY_IDS = {
