@@ -112,6 +112,7 @@ CONSTANTS.DRAGONFLIGHT_REPUTATION_CURRENCY_IDS = {
 	[2108] = true, -- Maruuk Commendation
 	[2109] = true, -- Ikaara Commendation
 	[2420] = true, -- Loamm Niffen Commendation
+	[2652] = true, -- Dream Wardens Commendation
 
 }
 

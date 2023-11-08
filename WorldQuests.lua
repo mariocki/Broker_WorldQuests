@@ -45,6 +45,7 @@ local isHorde = UnitFactionGroup("player") == "Horde"
 -- /run local mapID = C_Map.GetBestMapForUnit("player"); print(format("You are in %s (%d)", C_Map.GetMapInfo(mapID).name, mapID))
 local MAP_ZONES = {
     [CONSTANTS.EXPANSIONS.DRAGONFLIGHT] = {
+        [2200] = { id = 2200, name = GetMapInfo(2200).name, quests = {}, buttons = {}, }, -- Emerald Dream
         [2133] = { id = 2133, name = GetMapInfo(2133).name, quests = {}, buttons = {}, }, -- Zaralek Cavern
         [2151] = { id = 2151, name = GetMapInfo(2151).name, quests = {}, buttons = {}, }, -- Forbidden Reach
         [2112] = { id = 2112, name = GetMapInfo(2112).name, quests = {}, buttons = {}, }, -- Valdrakken
@@ -94,7 +95,7 @@ local MAP_ZONES = {
 }
 local MAP_ZONES_SORT = {
 	[CONSTANTS.EXPANSIONS.DRAGONFLIGHT] = {
-        2022, 2023, 2024, 2025, 2085, 2112, 2151, 2133
+        2022, 2023, 2024, 2025, 2085, 2112, 2151, 2133, 2200
     },
     [CONSTANTS.EXPANSIONS.SHADOWLANDS] = {
 		1525, 1533, 1536, 1565, 1543, 1961, 1970
