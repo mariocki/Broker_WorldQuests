@@ -1027,6 +1027,16 @@ local RetrieveWorldQuests = function(mapId)
                                 rewardType[#rewardType + 1] = CONSTANTS.REWARD_TYPES.FLIGHTSTONES
                                 quest.reward.flightStones = currency.amount
                                 quest.hide = false
+                            elseif currencyId == 2657 then -- Mysterious Fragments
+                                rewardType[#rewardType + 1] = CONSTANTS.REWARD_TYPES.MYSTERIOUS_FRAGMENT
+                                quest.reward.mysteriousFragment = currency.amount
+                                quest.hide = false
+                            elseif currencyId == 2706 then -- Whelpings Dreaming Crest
+                                rewardType[#rewardType + 1] = CONSTANTS.REWARD_TYPES.WHELPLINGS_DREAMING_CREST
+                                quest.reward.whelplingsDreamingCrest = currency.amount
+                                quest.hide = false
+                            elseif currencyId == 1602 then -- Conquest
+                            elseif currencyId == 1792 then -- Honor
                             else
                                 if DEBUG then
                                     print(string.format("[BWQ] Unhandled currency: ID %s", currencyId))
