@@ -844,11 +844,11 @@ local RetrieveWorldQuests = function(mapId)
                     quest.quality = questTagInfo.quality
                     quest.isElite = questTagInfo.isElite
 
-                    title, factionId = GetQuestInfoByQuestID(quest.questId)
+                    title, factionId = C_TaskQuest.GetQuestInfoByQuestID(quest.questId)
                     quest.title = title
                     quest.factionId = factionId
                     if factionId then
-                        quest.faction = GetFactionInfoByID(factionId)
+                        quest.faction = C_Reputation.GetFactionDataByID(factionId)["name"]
                     end
                     quest.timeLeft = timeLeft
                     quest.bounties = {}
@@ -933,10 +933,10 @@ local RetrieveWorldQuests = function(mapId)
                     end
 
                     -- currency reward
-                    local numQuestCurrencies = GetNumQuestLogRewardCurrencies(quest.questId)
+                    local numQuestCurrencies = C_QuestLog.GetQuestRewardCurrencies(quest.questId)
                     quest.reward.currencies = {}
-                    for i = 1, numQuestCurrencies do
-                        local name, texture, numItems, currencyId = GetQuestLogRewardCurrencyInfo(i, quest.questId)
+                    for i = 1, BWQ:tcount(numQuestCurrencies) do
+                        local name, texture, numItems, currencyId = C_QuestLog.GetQuestRewardCurrencyInfo(i, quest.questId, false)
                         if name then
                             hasReward = true
                             local currency = {}
@@ -2791,6 +2791,16 @@ end
 
 function BWQ:AddFlightMapHook()
     hooksecurefunc(WorldQuestDataProviderMixin, "RefreshAllData", SetFlightMapPins)
+end
+
+function BWQ:tcount(tab)
+    local n = #tab
+    if (n == 0) then
+        for _ in pairs(tab) do
+        n = n + 1
+        end
+    end
+    return n
 end
 
 function BWQ:AttachToBlock(anchor)
