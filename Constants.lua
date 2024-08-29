@@ -6,7 +6,8 @@ CONSTANTS.EXPANSIONS = {
 	LEGION = "LEGION",
 	BFA = "BFA",
 	SHADOWLANDS = "SHADOWLANDS",
-	DRAGONFLIGHT = "DRAGONFLIGHT"
+	DRAGONFLIGHT = "DRAGONFLIGHT",
+	TWW = "TWW"
 }
 CONSTANTS.FACTIONS = {
 	NEUTRAL = 0,
@@ -58,7 +59,10 @@ CONSTANTS.REWARD_TYPES = {
 	FLIGHTSTONES = 14,
 	ELEMENTAL_OVERFLOW = 15,
 	MYSTERIOUS_FRAGMENT = 16,
-	WHELPLINGS_DREAMING_CREST = 17
+	WHELPLINGS_DREAMING_CREST = 17,
+	RESONANCE_CRYSTALS = 18,
+	VALORSTONES = 19,
+	KEJ = 20
 }
 
 CONSTANTS.QUEST_TYPES = {
@@ -107,6 +111,10 @@ CONSTANTS.CURRENCIES_AFFECTED_BY_WARMODE = {
 	[1553] = true, -- azerite
 }
 
+CONSTANTS.TWW_REPUTATION_CURRENCY_IDS = {
+}
+
+
 CONSTANTS.DRAGONFLIGHT_REPUTATION_CURRENCY_IDS = {
 	[2003] = true, -- Dragon Isles Supply Cache
 	[2031] = true, -- Dragonscale Expedition Commendation
@@ -115,7 +123,6 @@ CONSTANTS.DRAGONFLIGHT_REPUTATION_CURRENCY_IDS = {
 	[2109] = true, -- Ikaara Commendation
 	[2420] = true, -- Loamm Niffen Commendation
 	[2652] = true, -- Dream Wardens Commendation
-
 }
 
 CONSTANTS.SHADOWLANDS_REPUTATION_CURRENCY_IDS = {
@@ -162,7 +169,7 @@ CONSTANTS.FAMILY_FAMILIAR_QUEST_IDS = { -- WQ pet battle achievement
 
 CONSTANTS.ACHIEVEMENT_IDS = {
 	PET_BATTLE_WQ = {
-		[CONSTANTS.EXPANSIONS.DRAGONFLIGHT] = 14625, -- TODO DRAGONFLIGHT
+		[CONSTANTS.EXPANSIONS.DRAGONFLIGHT] = 14625, -- TODO DRAGONFLIGHT & TWW
 		[CONSTANTS.EXPANSIONS.SHADOWLANDS] = 14625,
 		[CONSTANTS.EXPANSIONS.BFA] = 12936,
 		[CONSTANTS.EXPANSIONS.LEGION] = 10876,
@@ -278,7 +285,7 @@ CONSTANTS.ACHIEVEMENT_CRITERIAS = {
 	[61784] = 15,
 	[61783] = 16,
 	-- Dragonflight
-	-- TODO DRAGONFLIGHT
+	-- TODO DRAGONFLIGHT & TWW
 }
 
 -- faction ids and icon name for factions with paragon reputation
@@ -332,6 +339,13 @@ CONSTANTS.PARAGON_FACTIONS = {
 		[2511] = "DragonflightMajorFactionsValdrakken", -- Valdrakken Accord
 		[2503] = "DragonflightMajorFactionsCentaur" -- Maruuk Centaur
 	},
+	tww = {
+		order = { 2590, 2594, 2570, 2600 },
+		[2590] = "DragonflightMajorFactionsExpedition", -- Council of Dornogal
+		[2594] = "DragonflightMajorFactionsTuskarr", -- The Assembly of the Deeps
+		[2570] = "DragonflightMajorFactionsValdrakken", -- Hallowfall Arathi
+		[2600] = "DragonflightMajorFactionsCentaur" -- The Severed Threads
+	}
 }
 
 addon.CONSTANTS = CONSTANTS
